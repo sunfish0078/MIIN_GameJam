@@ -6,5 +6,9 @@ namespace ChoiJeongYun.Scripts.Enemy
     public class EnemySO : ScriptableObject
     {
         public string EnemyName;
+        public int maxHealth;
+        public int moveSpeed;
+        public int chaseRange;
+
     }
 }

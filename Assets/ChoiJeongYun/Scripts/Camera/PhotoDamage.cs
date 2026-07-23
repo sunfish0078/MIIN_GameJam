@@ -7,8 +7,8 @@ public class PhotoDamage : MonoBehaviour
     [SerializeField] private Camera cctvCamera;
     [SerializeField] private Photo photo;
     [SerializeField] private FlashEffect flashEffect;
-    [SerializeField] private float minDamage = 1f;
-    [SerializeField] private float maxDamage = 15f;
+    [SerializeField] private int minDamage = 1;
+    [SerializeField] private int maxDamage = 15;
     [SerializeField] private string enemyTag = "enemy";
 
     private void OnEnable()
@@ -38,7 +38,7 @@ public class PhotoDamage : MonoBehaviour
             if (col.TryGetComponent(out IDamageable damageable))
             {
                 float overlapRatio = GetOverlapRatio(worldPoint, captureRadius, col);
-                float damage = Mathf.Lerp(minDamage, maxDamage, overlapRatio);
+                int damage = Mathf.RoundToInt(Mathf.Lerp(minDamage, maxDamage, overlapRatio));
                 damageable.TakeDamage(damage);
             }
         }

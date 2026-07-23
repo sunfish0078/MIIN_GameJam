@@ -6,9 +6,9 @@ public class Photo : MonoBehaviour
     private const float AspectRatio = 1920f / 1080f;
 
     [SerializeField] private RectTransform rectTrs;
-    [SerializeField] private float minWidth;
-    [SerializeField] private float maxWidth;
-    [SerializeField] private float scrollSensitivity;
+    [SerializeField] private float minWidth = 200;
+    [SerializeField] private float maxWidth = 1920;
+    [SerializeField] private float scrollSensitivity = 30;
 
     private float currentWidth;
     private Canvas canvas;
