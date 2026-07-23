@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,9 @@ public class FlashEffect : MonoBehaviour
     [SerializeField] private Image flashImage;
     [SerializeField] private float holdDuration;
     [SerializeField] private float fadeOutDuration;
+    [SerializeField] private float cooldown;
+
+    public event Action OnCaptured;
 
     private bool isFlashing = false;
 
@@ -28,6 +32,7 @@ public class FlashEffect : MonoBehaviour
     {
         if (isFlashing) return;
 
+        OnCaptured?.Invoke();
         StartCoroutine(FlashRoutine());
     }
 
@@ -47,6 +52,8 @@ public class FlashEffect : MonoBehaviour
         }
         
         SetAlpha(0f);
+        
+        yield return new WaitForSeconds(cooldown);
         isFlashing = false;
     }
 

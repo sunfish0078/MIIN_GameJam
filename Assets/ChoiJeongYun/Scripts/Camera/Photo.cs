@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// 스크롤로 촬영 범위(레티클) 크기를 조절하고, 마우스를 따라다니게 한다.
-// 최대로 올리면 1920x1080(16:9) 풀스크린 크기가 됨. GetSizeRatio()는 명중 시 데미지 배율 계산용으로 열어둠.
 public class Photo : MonoBehaviour
 {
     private const float AspectRatio = 1920f / 1080f;
@@ -62,5 +60,10 @@ public class Photo : MonoBehaviour
     public float GetSizeRatio()
     {
         return Mathf.InverseLerp(minWidth, maxWidth, currentWidth);
+    }
+
+    public float GetCurrentWidth()
+    {
+        return currentWidth;
     }
 }
