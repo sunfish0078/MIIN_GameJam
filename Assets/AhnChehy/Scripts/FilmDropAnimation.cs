@@ -1,6 +1,5 @@
 using DG.Tweening;
 using UnityEngine;
-using DG.Tweening;
 
 public class FilmDropAnimation : MonoBehaviour
 {
