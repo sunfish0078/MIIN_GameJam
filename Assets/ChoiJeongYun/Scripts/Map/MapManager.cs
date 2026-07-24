@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using ChoiJeongYun.Scripts.Anomaly;
 using ChoiJeongYun.Scripts.Enemy;
 using ChoiJeongYun.Scripts.Feedback;
+using ChoiJeongYun.Scripts.Timer;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +23,16 @@ public class MapManager : MonoBehaviour
 
     [Header("Monster Spawn Points")]
     [SerializeField] private RoomSpawnPoint[] spawnPoints;
+
+    [Header("Monster Patrol Points")]
+    [SerializeField] private Transform[] bRoom1PatrolPoints;
+    [SerializeField] private Transform[] bRoom2PatrolPoints;
+    [SerializeField] private Transform[] bRoom3PatrolPoints;
+
+    [Header("Anomaly Spawn Points")]
+    [SerializeField] private Transform[] bRoom1AnomalyPoints;
+    [SerializeField] private Transform[] bRoom2AnomalyPoints;
+    [SerializeField] private Transform[] bRoom3AnomalyPoints;
 
     [Header("Fade")]
     [SerializeField] private Image blackPanel;
@@ -108,8 +120,24 @@ public class MapManager : MonoBehaviour
         if (controlRoomRenderer != null)
             controlRoomRenderer.sprite = map.controlRoom;
 
-        SpawnMonster(map.monsterPrefab, FindSpawnPoint(roomType));
+        SpawnMonster(map.mainMonsterPrefab, FindSpawnPoint(roomType), FindPatrolPoints(roomType));
         SetItemsActive(roomType == RoomType.ARoom);
+
+        if (AnomalyManager.Instance != null)
+        {
+            if (roomType == RoomType.ARoom)
+                AnomalyManager.Instance.StopRoom();
+            else
+                AnomalyManager.Instance.SetupRoom(map.anomalyPrefabA, map.anomalyPrefabB, FindAnomalyPoints(roomType));
+        }
+
+        if (RoomTimer.Instance != null)
+        {
+            if (roomType == RoomType.ARoom)
+                RoomTimer.Instance.StopRoom();
+            else
+                RoomTimer.Instance.SetupRoom(map.startHour, map.startMinute, map.encroachmentDurationSeconds);
+        }
     }
     
     public void SwitchToMapWithFade(RoomType roomType)
@@ -154,6 +182,28 @@ public class MapManager : MonoBehaviour
         return null;
     }
 
+    private Transform[] FindPatrolPoints(RoomType roomType)
+    {
+        switch (roomType)
+        {
+            case RoomType.BRoom1: return bRoom1PatrolPoints;
+            case RoomType.BRoom2: return bRoom2PatrolPoints;
+            case RoomType.BRoom3: return bRoom3PatrolPoints;
+            default: return null;
+        }
+    }
+
+    private Transform[] FindAnomalyPoints(RoomType roomType)
+    {
+        switch (roomType)
+        {
+            case RoomType.BRoom1: return bRoom1AnomalyPoints;
+            case RoomType.BRoom2: return bRoom2AnomalyPoints;
+            case RoomType.BRoom3: return bRoom3AnomalyPoints;
+            default: return null;
+        }
+    }
+
     private void SetItemsActive(bool active)
     {
         foreach (GameObject item in allItems)
@@ -163,7 +213,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void SpawnMonster(GameObject monsterPrefab, Transform spawnPoint)
+    private void SpawnMonster(GameObject monsterPrefab, Transform spawnPoint, Transform[] patrolPoints)
     {
         if (currentMonster != null)
             Destroy(currentMonster);
@@ -175,6 +225,7 @@ public class MapManager : MonoBehaviour
             if (currentMonster.TryGetComponent(out AbstractEnemy enemy))
             {
                 enemy.OnDeadEvent.AddListener(HandleMonsterDead);
+                enemy.MovementCompo.SetPatrolPoints(patrolPoints);
             }
         }
     }

@@ -21,4 +21,6 @@ MonoBehaviour:
   room6: {fileID: 21300000, guid: 312c5316130821343b63bbdd8af4d83d, type: 3}
   room7: {fileID: 21300000, guid: be2c539676b6b8d4db1241ab5729a98c, type: 3}
   controlRoom: {fileID: 21300000, guid: e48574987900eda4b98a97f125a0b8c1, type: 3}
-  monsterPrefab: {fileID: 6924486054909758088, guid: ff907b88b6787504ebe87c8a6e7cdee4, type: 3}
+  mainMonsterPrefab: {fileID: 6924486054909758088, guid: ff907b88b6787504ebe87c8a6e7cdee4, type: 3}
+  anomalyPrefabA: {fileID: 6924486054909758088, guid: 8a8d700f7cdab98428e97ff9b494026c, type: 3}
+  anomalyPrefabB: {fileID: 6924486054909758088, guid: 494aa4d3f8a69224a9653049e7c7d255, type: 3}

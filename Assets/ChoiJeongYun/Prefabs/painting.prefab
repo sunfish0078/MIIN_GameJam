@@ -24,6 +24,10 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.20273495
       objectReference: {fileID: 0}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: switchesPerMove
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 2266170032230423538, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -72,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 4644523113532460279, guid: 57ceca1262fed534395748931a2dd2b8, type: 3}
+    - target: {fileID: 6975366311784725347, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: maxHealth
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

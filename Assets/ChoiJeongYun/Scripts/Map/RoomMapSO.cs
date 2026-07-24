@@ -18,5 +18,14 @@ public class RoomMapSO : ScriptableObject
     public Sprite controlRoom;
 
     [Header("적")]
-    public GameObject monsterPrefab;
+    public GameObject mainMonsterPrefab;
+
+    [Header("이상현상")]
+    public GameObject anomalyPrefabA;
+    public GameObject anomalyPrefabB;
+
+    [Header("타이머")]
+    public int startHour = 22;
+    public int startMinute = 0;
+    public float encroachmentDurationSeconds = 300f;
 }

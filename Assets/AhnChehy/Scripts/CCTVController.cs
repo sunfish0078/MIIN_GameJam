@@ -1,36 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 using UnityEngine.InputSystem;
 
-
-// 관리실 시점 ↔ CCTV 시점을 전환하는 컨트롤러.
-// 씬(스테이지)이 바뀌어도 파괴되지 않고 유지되는 싱글톤.
-
-// 조작:
-// - W : CCTV 감시 모드 켜기
-// - S : CCTV 감시 모드 끄기 (관리실 시점으로 복귀)
-// - Q : 이전 CCTV로 전환
-// - E : 다음 CCTV로 전환
-
-// 동작 원리:
-// - 관리실캠(controlRoomCamera)은 모든 스테이지가 공유하는 단 하나의 오브젝트.
-//  이 스크립트가 붙은 오브젝트의 자식으로 넣어두면 DontDestroyOnLoad에 같이 딸려가서
-// 씬이 바뀌어도 계속 살아있음.
-// - CCTV들은 스테이지 씬마다 다른 오브젝트이므로, 새 씬이 로드될 때마다
-//  그 씬에 있는 CCTVSceneCameras를 찾아 CCTV 목록만 새로 갱신함.
-
-/*
-사용법:
-1) 맨 처음 로드되는 씬에 빈 GameObject 만들어서 이 스크립트 부착
-2) 그 GameObject의 자식으로 관리실 Virtual Camera를 넣고, controlRoomCamera에 연결
-3) 각 스테이지 씬에는 CCTVSceneCameras 컴포넌트를 배치하고, 그 스테이지의 CCTV들을 연결
-*/
-
 public class CCTVController : MonoBehaviour
 {
     public static CCTVController Instance { get; private set; }
- 
+    
+    public event Action OnCameraSwitched;
+
     [Header("관리실 카메라")]
     [SerializeField] private CinemachineCamera controlRoomCamera;
 
@@ -47,8 +26,7 @@ public class CCTVController : MonoBehaviour
     [SerializeField] private Key closeKey = Key.S;
     [SerializeField] private Key previousKey = Key.Q;
     [SerializeField] private Key nextKey = Key.E;
- 
-    // 현재 스테이지의 CCTV 목록. 씬이 바뀔 때마다 갱신됨.
+    
     private CCTVCameraEntry[] cctvCameras;
  
     private int currentIndex = 0;
@@ -80,22 +58,17 @@ public class CCTVController : MonoBehaviour
     {
         ShowControlRoom();
     }
- 
-
-    // 새 씬이 로드될 때마다 호출됨. 그 씬의 CCTVSceneCameras를 찾아 CCTV 목록을 갱신.
+    
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RebindCCTVsForCurrentScene();
     }
  
-
-    // 현재 씬에 있는 CCTVSceneCameras를 찾아서 CCTV 목록을 새로 연결.
-    // 해당 씬에 없으면(예: 메인 메뉴 씬) CCTV 목록을 비워둠.
+    
     private void RebindCCTVsForCurrentScene()
     {
-        // 유니티 최신 API 사용 권장 (구버전은 FindObjectOfType<CCTVSceneCameras>() 유지)
-        CCTVSceneCameras sceneCameras = Object.FindFirstObjectByType<CCTVSceneCameras>();
+        CCTVSceneCameras sceneCameras = UnityEngine.Object.FindFirstObjectByType<CCTVSceneCameras>();
 
         cctvCameras = (sceneCameras != null) ? sceneCameras.cctvCameras : null;
 
@@ -198,6 +171,8 @@ public class CCTVController : MonoBehaviour
 
         if (glitchEffect != null)
             glitchEffect.TriggerGlitch();
+
+        OnCameraSwitched?.Invoke();
     }
 
     private void ShowNextCamera()
@@ -210,6 +185,8 @@ public class CCTVController : MonoBehaviour
 
         if (glitchEffect != null)
             glitchEffect.TriggerGlitch();
+
+        OnCameraSwitched?.Invoke();
     }
  
     private void ActivateCCTVAt(int index)

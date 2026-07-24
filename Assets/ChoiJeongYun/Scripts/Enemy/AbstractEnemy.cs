@@ -21,7 +21,8 @@ namespace ChoiJeongYun.Scripts.Enemy
             HealthCompo = GetComponentInChildren<EnemyHealth>();
 
             HealthCompo.OnDead += HandleOnDead;
-
+            HealthCompo.OnDamageThresholdReached += MovementCompo.BeginRetreatAndApproach;
+            OnHitEvent.AddListener(MovementCompo.HandleHit);
         }
 
         private void HandleOnDead()
@@ -33,8 +34,12 @@ namespace ChoiJeongYun.Scripts.Enemy
         public virtual void TakeDamage(int damage)
         {
             if (IsDead) return;
-            
+
             HealthCompo.TakeDamage(damage);
+
+            // 이번 타격으로 죽었으면 피격 반응(블링크/도망)은 굳이 재생 안 함 — 사망 연출과 겹쳐서 꼬임
+            if (IsDead) return;
+
             OnHitEvent?.Invoke();
         }
     }
