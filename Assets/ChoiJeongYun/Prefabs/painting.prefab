@@ -10,19 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -1665797604422451515, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Size.x
-      value: 2.8327355
+      value: 1.8663923
       objectReference: {fileID: 0}
     - target: {fileID: -1665797604422451515, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Size.y
-      value: 6.1075687
+      value: 3.4877024
       objectReference: {fileID: 0}
     - target: {fileID: -1665797604422451515, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Offset.x
-      value: 0.15314674
+      value: 0.03503841
       objectReference: {fileID: 0}
     - target: {fileID: -1665797604422451515, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Offset.y
-      value: -0.20273495
+      value: 0.001270771
       objectReference: {fileID: 0}
     - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: switchesPerMove

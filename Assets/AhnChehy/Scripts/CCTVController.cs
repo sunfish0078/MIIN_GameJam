@@ -1,4 +1,5 @@
 using System;
+using ChoiJeongYun.Scripts.Interaction;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
@@ -128,6 +129,10 @@ public class CCTVController : MonoBehaviour
     {
         // 이미 열려있으면 무시 (안 그러면 W 누를 때마다 지지직 이펙트가 다시 나감)
         if (isCCTVOpen)
+            return false;
+
+        // 숨어있는 동안엔 CCTV를 열 수 없음
+        if (HidingState.Instance != null && HidingState.Instance.IsHidden)
             return false;
 
         // 이 스테이지에 CCTV가 등록되어 있지 않으면 무시

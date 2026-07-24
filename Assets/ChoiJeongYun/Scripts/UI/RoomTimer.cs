@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using ChoiJeongYun.Scripts.Anomaly;
 using TMPro;
 using UnityEngine;
@@ -8,8 +9,7 @@ namespace ChoiJeongYun.Scripts.Timer
     public class RoomTimer : MonoBehaviour
     {
         public static RoomTimer Instance { get; private set; }
-
-        // 0이 되면 발동 (관리실 침입/사망연출 작업에서 소비 예정)
+        
         public event Action OnEncroachmentReached;
 
         [Header("UI")]
@@ -17,7 +17,13 @@ namespace ChoiJeongYun.Scripts.Timer
         [SerializeField] private TMP_Text currentTimeText;
         [SerializeField] private TMP_Text remainingTimeText;
 
-        [Header("현재시간 진행 속도 (실제 1초당 게임 내 분)")]
+        [Header("접근 경고 (깜빡거림)")]
+        [SerializeField] private TMP_Text approachWarningText;
+        [SerializeField] private float blinkInterval = 0.5f;
+
+        private Coroutine blinkRoutine;
+
+        [Header("현재시간 진행 속도")]
         [SerializeField] private float gameMinutesPerRealSecond = 0.1f;
 
         private int startHour;
@@ -38,6 +44,51 @@ namespace ChoiJeongYun.Scripts.Timer
 
             if (timerRoot != null)
                 timerRoot.SetActive(false);
+
+            if (approachWarningText != null)
+                approachWarningText.gameObject.SetActive(false);
+        }
+
+        public void ShowApproachWarning()
+        {
+            if (approachWarningText == null) return;
+
+            approachWarningText.gameObject.SetActive(true);
+
+            if (blinkRoutine != null)
+                StopCoroutine(blinkRoutine);
+
+            blinkRoutine = StartCoroutine(BlinkRoutine());
+        }
+
+        public void HideApproachWarning()
+        {
+            if (blinkRoutine != null)
+            {
+                StopCoroutine(blinkRoutine);
+                blinkRoutine = null;
+            }
+
+            if (approachWarningText != null)
+                approachWarningText.gameObject.SetActive(false);
+        }
+
+        private IEnumerator BlinkRoutine()
+        {
+            bool visible = true;
+            while (true)
+            {
+                SetWarningAlpha(visible ? 1f : 0f);
+                visible = !visible;
+                yield return new WaitForSeconds(blinkInterval);
+            }
+        }
+
+        private void SetWarningAlpha(float alpha)
+        {
+            Color c = approachWarningText.color;
+            c.a = alpha;
+            approachWarningText.color = c;
         }
 
         public void SetupRoom(int roomStartHour, int roomStartMinute, float roomDurationSeconds)
@@ -60,6 +111,8 @@ namespace ChoiJeongYun.Scripts.Timer
 
             if (timerRoot != null)
                 timerRoot.SetActive(false);
+
+            HideApproachWarning();
         }
 
         private void Update()

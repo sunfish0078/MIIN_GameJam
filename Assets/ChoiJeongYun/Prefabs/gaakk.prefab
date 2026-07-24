@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: switchesPerMove
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: footstepWarningLead
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2266170032230423538, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

@@ -24,3 +24,6 @@ MonoBehaviour:
   mainMonsterPrefab: {fileID: 6924486054909758088, guid: d3ccd318f7fbaab4c8fe3125d0a7ba26, type: 3}
   anomalyPrefabA: {fileID: 6924486054909758088, guid: 38293972dd513ea49abd997203005595, type: 3}
   anomalyPrefabB: {fileID: 6924486054909758088, guid: 563d7fe2bfe780c49955f5ffde1b37c4, type: 3}
+  startHour: 9
+  startMinute: 39
+  encroachmentDurationSeconds: 120

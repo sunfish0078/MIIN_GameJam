@@ -38,6 +38,12 @@ namespace ChoiJeongYun.Scripts.Anomaly
             Show(tier2Message, tier2Color);
         }
 
+        // 잠식 경고 외에 다른 곳(몬스터 접근 경고 등)에서도 같은 토스트 연출을 재사용하기 위한 범용 진입점
+        public void ShowCustomMessage(string message, Color color)
+        {
+            Show(message, color);
+        }
+
         private void Show(string message, Color color)
         {
             if (activeRoutine != null)

@@ -30,8 +30,8 @@ namespace ChoiJeongYun.Scripts.Enemy
         // 6번(오디오) 작업에서 구독
         public event Action OnFootstepWarning;
 
-        // 2번(관리실 침입) 작업에서 구독
-        public event Action OnReachedControlRoom;
+        // 2번(관리실 침입) 작업에서 구독. 구독자가 어떤 몬스터가 도착했는지 알아야 리셋을 호출할 수 있어서 자기 자신을 넘김.
+        public event Action<EnemyMovement> OnReachedControlRoom;
 
         private SpriteRenderer spriteRenderer;
         private Collider2D bodyCollider;
@@ -128,8 +128,24 @@ namespace ChoiJeongYun.Scripts.Enemy
             yield return new WaitForSeconds(footstepWarningLead);
 
             state = State.AtControlRoom;
-            OnReachedControlRoom?.Invoke();
+            OnReachedControlRoom?.Invoke(this);
 
+            activeRoutine = null;
+        }
+
+        // 관리실 도착 시 플레이어가 숨어있어서 몬스터가 실패했을 때(2번 작업) 순찰 상태로 되돌리는 용도
+        public void ResetToPatrol()
+        {
+            if (activeRoutine != null)
+                StopCoroutine(activeRoutine);
+
+            state = State.Patrolling;
+
+            SetAlpha(1f);
+            if (spriteRenderer != null) spriteRenderer.enabled = true;
+            if (bodyCollider != null) bodyCollider.enabled = true;
+
+            TeleportToDifferentPoint();
             activeRoutine = null;
         }
 

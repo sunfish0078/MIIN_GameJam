@@ -44,6 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b674e77d540947ed8c41398420714cc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.EnemyMovement
+  switchesPerMove: 3
+  hitFeedbackDelay: 0.3
+  fadeOutDuration: 0.5
+  approachDuration: 10
+  footstepWarningLead: 1.5
 --- !u!1 &3523452319308846885
 GameObject:
   m_ObjectHideFlags: 0
@@ -54,9 +59,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9221322627965918410}
   - component: {fileID: 5862561303525651008}
-  - component: {fileID: 8654504691292271020}
-  - component: {fileID: 8503850222966560970}
-  - component: {fileID: 6658641528487200000}
   m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
@@ -138,52 +140,69 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!95 &8654504691292271020
-Animator:
-  serializedVersion: 7
+--- !u!1 &3589189926991618962
+GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3523452319308846885}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8503850222966560970
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 42981206467908014}
+  - component: {fileID: 8958662729540545105}
+  - component: {fileID: 5803715855027462596}
+  m_Layer: 6
+  m_Name: DeadFeedback
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &42981206467908014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3589189926991618962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2266170032230423538}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8958662729540545105
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3523452319308846885}
+  m_GameObject: {fileID: 3589189926991618962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 859d266a9ca04db09c050b50ff6e6b02, type: 3}
+  m_Script: {fileID: 11500000, guid: 90072d4520d045d080c85f7a83998694, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.EnemyAnimator
---- !u!114 &6658641528487200000
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Feedback.FeedbackPlayer
+--- !u!114 &5803715855027462596
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3523452319308846885}
+  m_GameObject: {fileID: 3589189926991618962}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 912179f54860476388d35c7e7049db54, type: 3}
+  m_Script: {fileID: 11500000, guid: b107cbed4c5e2c94fab7e65fac0b98c1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.EnemyAnimationTrigger
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Feedback.DeathBurstFeedback
+  targetRenderer: {fileID: 5862561303525651008}
+  particleCount: 24
+  burstSpeed: 2.5
+  particleLifetime: 0.5
+  particleSize: 0.06
+  particleColor: {r: 0.55, g: 0.05, b: 0.05, a: 1}
 --- !u!1 &3919582709455077446
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,6 +238,7 @@ Transform:
   - {fileID: 1724506628309677724}
   - {fileID: 736627907848013751}
   - {fileID: 7428381988808010029}
+  - {fileID: 42981206467908014}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2665299471966447638
@@ -235,7 +255,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.AbstractEnemy
   OnDeadEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8958662729540545105}
+        m_TargetAssemblyTypeName: ChoiJeongYun.Scripts.Feedback.FeedbackPlayer, Assembly-CSharp
+        m_MethodName: PlayFeedback
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnHitEvent:
     m_PersistentCalls:
       m_Calls:
@@ -394,3 +426,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.EnemyHealth
   maxHealth: 50
   currentHealth: 0
+  retreatThresholdPercent: 0.3

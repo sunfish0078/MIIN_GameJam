@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ChoiJeongYun.Scripts.Anomaly;
 using ChoiJeongYun.Scripts.Enemy;
 using ChoiJeongYun.Scripts.Feedback;
+using ChoiJeongYun.Scripts.Map;
 using ChoiJeongYun.Scripts.Timer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -226,6 +227,12 @@ public class MapManager : MonoBehaviour
             {
                 enemy.OnDeadEvent.AddListener(HandleMonsterDead);
                 enemy.MovementCompo.SetPatrolPoints(patrolPoints);
+
+                if (GameOverManager.Instance != null)
+                {
+                    enemy.MovementCompo.OnFootstepWarning += GameOverManager.Instance.HandleFootstepWarning;
+                    enemy.MovementCompo.OnReachedControlRoom += GameOverManager.Instance.HandleMonsterReachedControlRoom;
+                }
             }
         }
     }
