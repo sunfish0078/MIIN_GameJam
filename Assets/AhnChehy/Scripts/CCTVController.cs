@@ -31,10 +31,14 @@ public class CCTVController : MonoBehaviour
 {
     public static CCTVController Instance { get; private set; }
  
-    [Header("관리실캠 (모든 스테이지 공유, 자식 오브젝트로 넣기)")]
+    [Header("관리실 카메라")]
     [SerializeField] private CinemachineCamera controlRoomCamera;
- 
-    [Header("Priority 값 설정")]
+
+    [Header("CCTV 전용 UI")]
+    [SerializeField] private GameObject cctvCanvas;
+    [SerializeField] private CCTVGlitchEffect glitchEffect;
+
+    [Header("Priority")]
     [SerializeField] private int activePriority = 20;
     [SerializeField] private int inactivePriority = 0;
  
@@ -45,7 +49,7 @@ public class CCTVController : MonoBehaviour
     [SerializeField] private Key nextKey = Key.E;
  
     // 현재 스테이지의 CCTV 목록. 씬이 바뀔 때마다 갱신됨.
-    private CinemachineCamera[] cctvCameras;
+    private CCTVCameraEntry[] cctvCameras;
  
     private int currentIndex = 0;
     private bool isCCTVOpen = false;
@@ -121,14 +125,21 @@ public class CCTVController : MonoBehaviour
  
     private void Update()
     {
+        if (PhotoTransitionEffect.IsPlaying)
+            return;
+
         Keyboard keyboard = Keyboard.current;
         if (keyboard[openKey].wasPressedThisFrame)
         {
-            OpenCCTV();
+            if (OpenCCTV() && glitchEffect != null)
+                glitchEffect.TriggerGlitch();
         }
         else if (keyboard[closeKey].wasPressedThisFrame)
         {
             ShowControlRoom();
+
+            if (glitchEffect != null)
+                glitchEffect.TriggerGlitch();
         }
  
         if (isCCTVOpen)
@@ -140,29 +151,41 @@ public class CCTVController : MonoBehaviour
         }
     }
  
-    private void OpenCCTV()
+    private bool OpenCCTV()
     {
+        // 이미 열려있으면 무시 (안 그러면 W 누를 때마다 지지직 이펙트가 다시 나감)
+        if (isCCTVOpen)
+            return false;
+
         // 이 스테이지에 CCTV가 등록되어 있지 않으면 무시
         if (cctvCameras == null || cctvCameras.Length == 0)
-            return;
- 
+            return false;
+
         isCCTVOpen = true;
         ActivateCCTVAt(currentIndex);
+
+        if (cctvCanvas != null)
+            cctvCanvas.SetActive(true);
+
+        return true;
     }
- 
-    private void ShowControlRoom()
+
+    public void ShowControlRoom()
     {
         isCCTVOpen = false;
- 
+
         controlRoomCamera.Priority = activePriority;
- 
+
         if (cctvCameras != null)
         {
-            foreach (var cam in cctvCameras)
+            foreach (var entry in cctvCameras)
             {
-                cam.Priority = inactivePriority;
+                entry.camera.Priority = inactivePriority;
             }
         }
+
+        if (cctvCanvas != null)
+            cctvCanvas.SetActive(false);
     }
  
     private void ShowPreviousCamera()
@@ -170,17 +193,23 @@ public class CCTVController : MonoBehaviour
         currentIndex--;
         if (currentIndex < 0)
             currentIndex = cctvCameras.Length - 1;
- 
+
         ActivateCCTVAt(currentIndex);
+
+        if (glitchEffect != null)
+            glitchEffect.TriggerGlitch();
     }
- 
+
     private void ShowNextCamera()
     {
         currentIndex++;
         if (currentIndex >= cctvCameras.Length)
             currentIndex = 0;
- 
+
         ActivateCCTVAt(currentIndex);
+
+        if (glitchEffect != null)
+            glitchEffect.TriggerGlitch();
     }
  
     private void ActivateCCTVAt(int index)
@@ -189,7 +218,16 @@ public class CCTVController : MonoBehaviour
  
         for (int i = 0; i < cctvCameras.Length; i++)
         {
-            cctvCameras[i].Priority = (i == index) ? activePriority : inactivePriority;
+            cctvCameras[i].camera.Priority = (i == index) ? activePriority : inactivePriority;
         }
+    }
+
+    // 현재 보고 있는 CCTV의 방 이름. CCTV가 꺼져있으면 빈 문자열.
+    public string GetCurrentRoomName()
+    {
+        if (!isCCTVOpen || cctvCameras == null || currentIndex >= cctvCameras.Length)
+            return string.Empty;
+
+        return cctvCameras[currentIndex].roomName;
     }
 }

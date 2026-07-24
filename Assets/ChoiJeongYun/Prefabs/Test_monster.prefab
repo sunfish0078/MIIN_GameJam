@@ -74,7 +74,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.4356, y: 0.8941, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2266170032230423538}
@@ -124,8 +124,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -328696001
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 346429651645712531, guid: 3e59f4a9b40baa24da4f2d8e79425a78, type: 3}
@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2266170032230423538}
   - component: {fileID: 2665299471966447638}
-  - component: {fileID: 1225455685337718250}
+  - component: {fileID: -1665797604422451515}
   m_Layer: 6
   m_Name: Test_monster
   m_TagString: enemy
@@ -210,9 +210,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3919582709455077446}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.10530473, w: -0.99444}
-  m_LocalPosition: {x: -4.95, y: -1.43, z: 0}
-  m_LocalScale: {x: 0.9301492, y: 3.871044, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9221322627965918410}
@@ -220,7 +220,7 @@ Transform:
   - {fileID: 736627907848013751}
   - {fileID: 7428381988808010029}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -12.089}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2665299471966447638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,8 +251,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!61 &1225455685337718250
-BoxCollider2D:
+--- !u!70 &-1665797604422451515
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -285,18 +285,9 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.009588242, y: 0.00064474344}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 2.5021992, y: 0.65933716}
-  m_EdgeRadius: 0
+  m_Offset: {x: -0.0025423765, y: 0.0012712181}
+  m_Size: {x: 0.738989, y: 0.74829894}
+  m_Direction: 0
 --- !u!1 &6513848993934816737
 GameObject:
   m_ObjectHideFlags: 0
@@ -401,5 +392,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7c3688853034eb0a2458c5ce364706c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoiJeongYun.Scripts.Enemy.EnemyHealth
-  maxHealth: 5000
+  maxHealth: 50
   currentHealth: 0

@@ -20,8 +20,19 @@ public class FlashEffect : MonoBehaviour
         SetAlpha(0f);
     }
 
+    private void OnEnable()
+    {
+        // CCTV 캔버스가 꺼졌다 켜지는 과정에서 페이드 코루틴이 중간에 끊겨도,
+        // 다시 켜질 때 항상 깨끗한 상태로 시작하게 함 (안 그러면 하얗게 멈춘 채로 남을 수 있음)
+        isFlashing = false;
+        SetAlpha(0f);
+    }
+
     private void Update()
     {
+        if (PhotoTransitionEffect.IsPlaying)
+            return;
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Flash();

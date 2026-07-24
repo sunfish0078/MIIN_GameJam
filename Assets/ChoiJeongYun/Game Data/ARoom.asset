@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d4b3ee1a69cca47b172b0acbc129d0, type: 3}
+  m_Name: ARoom
+  m_EditorClassIdentifier: Assembly-CSharp::RoomMapSO
+  mapName: ARoom
+  room1: {fileID: -2350682883136999133, guid: fe16885131e302a448a68313d0aad013, type: 3}
+  room2: {fileID: -8631856732873484348, guid: 71c008c20d6fdf6479272b1d381f7327, type: 3}
+  room3: {fileID: 7833025413018464910, guid: 5e7a156e3a147ad4d859242b234984fa, type: 3}
+  room4: {fileID: -309852909932979362, guid: f7e284da75f39a840b541e438492b339, type: 3}
+  room5: {fileID: -7978288406671583322, guid: f160f73342c3b554b8deb1f18a830918, type: 3}
+  room6: {fileID: 6629206335046585300, guid: 2a1619b6060632347b405b6bf8fc8fb5, type: 3}
+  room7: {fileID: 1413729784868838520, guid: 297f2e7d740c88c4080a69da372f23c0, type: 3}
+  controlRoom: {fileID: 7991685669769196181, guid: acea74649643d3e4992bbcf19409ec5e, type: 3}
+  monsterPrefab: {fileID: 0}
