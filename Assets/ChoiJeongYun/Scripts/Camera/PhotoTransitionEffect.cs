@@ -8,6 +8,12 @@ public class PhotoTransitionEffect : MonoBehaviour
     
     public static bool IsPlaying { get; private set; }
 
+    // MapManager처럼 다른 곳에서 진행하는 연출(몬스터 죽고 A룸 복귀 등)도 같은 입력 잠금을 쓰게 하기 위한 통로.
+    public static void SetInputLocked(bool locked)
+    {
+        IsPlaying = locked;
+    }
+
     [Header("Pop-in")]
     [SerializeField] private float popDuration = 0.35f;
     [SerializeField] private AnimationCurve popCurve = new AnimationCurve(

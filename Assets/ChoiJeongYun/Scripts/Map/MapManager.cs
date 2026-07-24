@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using ChoiJeongYun.Scripts.Enemy;
 using ChoiJeongYun.Scripts.Feedback;
 using UnityEngine;
@@ -39,6 +40,7 @@ public class MapManager : MonoBehaviour
     private SpriteRenderer controlRoomRenderer;
     private GameObject currentMonster;
     private Texture2D currentSnapshot;
+    private List<GameObject> allItems;
 
     private void Awake()
     {
@@ -57,6 +59,9 @@ public class MapManager : MonoBehaviour
         }
 
         controlRoomRenderer = FindRenderer(ControlRoomObjectName);
+
+        // FindGameObjectsWithTag는 비활성 오브젝트를 못 찾으므로, 다 켜져있는 지금(Awake) 시점에 미리 캐싱해둠.
+        allItems = new List<GameObject>(GameObject.FindGameObjectsWithTag(itemTag));
 
         if (blackPanel != null)
             SetBlackAlpha(0f);
@@ -151,9 +156,10 @@ public class MapManager : MonoBehaviour
 
     private void SetItemsActive(bool active)
     {
-        foreach (GameObject item in GameObject.FindGameObjectsWithTag(itemTag))
+        foreach (GameObject item in allItems)
         {
-            item.SetActive(active);
+            if (item != null)
+                item.SetActive(active);
         }
     }
 
@@ -180,16 +186,27 @@ public class MapManager : MonoBehaviour
 
     private IEnumerator ReturnToARoomAfterDelay()
     {
-        yield return new WaitForSeconds(returnToARoomDelay);
+        // 몬스터 죽고 나서 A룸에 실제로 돌아갈 때까지(찢어지는 연출+페이드 포함) 다른 입력 다 막음
+        PhotoTransitionEffect.SetInputLocked(true);
 
-        if (tornPhotoFeedback != null && currentSnapshot != null)
+        try
         {
-            yield return tornPhotoFeedback.PlayAndWait(currentSnapshot);
-            Destroy(currentSnapshot);
-            currentSnapshot = null;
-        }
+            yield return new WaitForSeconds(returnToARoomDelay);
 
-        SwitchToMapWithFade(RoomType.ARoom);
+            if (tornPhotoFeedback != null && currentSnapshot != null)
+            {
+                yield return tornPhotoFeedback.PlayAndWait(currentSnapshot);
+                Destroy(currentSnapshot);
+                currentSnapshot = null;
+            }
+
+            // SwitchToMapWithFade는 코루틴을 던지기만 하고 안 기다리므로, 직접 하위 코루틴으로 대기
+            yield return SwitchWithFadeRoutine(RoomType.ARoom);
+        }
+        finally
+        {
+            PhotoTransitionEffect.SetInputLocked(false);
+        }
     }
 
     public void SetCurrentSnapshot(Texture2D snapshot)

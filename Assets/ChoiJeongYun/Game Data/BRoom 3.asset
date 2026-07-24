@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: BRoom 3
   m_EditorClassIdentifier: Assembly-CSharp::RoomMapSO
   roomType: 3
-  room1: {fileID: 21300000, guid: 8ae935ae1ce59af44ade0466fb5f094e, type: 3}
-  room2: {fileID: 21300000, guid: 310ae7a853ba5354bb3acabc64a8ccb6, type: 3}
-  room3: {fileID: 21300000, guid: 1734b88bfd9392849a06fc86c50412c5, type: 3}
-  room4: {fileID: 21300000, guid: 5fec266d2443ec949a5bf75991b2b3a2, type: 3}
-  room5: {fileID: 21300000, guid: 47adfd57cbc3db148b4429777a213989, type: 3}
-  room6: {fileID: 21300000, guid: 150d9799a980ffd4a9c57358c3a72f12, type: 3}
-  room7: {fileID: 21300000, guid: 2bc85d50f8de22f4d863eecfb4fb12ac, type: 3}
+  room1: {fileID: 21300000, guid: c0ccb64ab941cf343aae65500e41ce9c, type: 3}
+  room2: {fileID: 21300000, guid: 9999829ce1330fa47afff237fc55ec9e, type: 3}
+  room3: {fileID: 21300000, guid: 74bde09939e51ce4dba28db0adae44f2, type: 3}
+  room4: {fileID: 21300000, guid: 9d79f8be25a79ac47bbf9f552869d0c7, type: 3}
+  room5: {fileID: 21300000, guid: 9061aa7e35bd4bd4a9f867afceabd2f3, type: 3}
+  room6: {fileID: 21300000, guid: 312c5316130821343b63bbdd8af4d83d, type: 3}
+  room7: {fileID: 21300000, guid: be2c539676b6b8d4db1241ab5729a98c, type: 3}
   controlRoom: {fileID: 21300000, guid: e48574987900eda4b98a97f125a0b8c1, type: 3}
-  monsterPrefab: {fileID: 0}
+  monsterPrefab: {fileID: 6924486054909758088, guid: ff907b88b6787504ebe87c8a6e7cdee4, type: 3}
