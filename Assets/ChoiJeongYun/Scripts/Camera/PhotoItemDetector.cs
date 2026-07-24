@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// 촬영 시 아이템(이상현상)이 레티클 안에 완전히 담기면(=레티클 중앙이 아이템 중앙에 근접하고,
-// 아이템 전체가 레티클 범위 안에 들어오면) 인식된 것으로 판정한다.
 public class PhotoItemDetector : MonoBehaviour
 {
     [SerializeField] private Camera cctvCamera;
@@ -50,9 +48,7 @@ public class PhotoItemDetector : MonoBehaviour
             }
         }
     }
-
-    // cctvCamera만 오프스크린으로 즉시 렌더링해서 크롭한다. UI 캔버스(플래시, 프롬프트 등)는
-    // 카메라 렌더링이 아니라 별도 합성이라 여기 안 찍힘 -> 지연 없이 바로 찍어도 하얗게 안 날아감.
+    
     private Texture2D CaptureWorldOnly(Rect screenRect)
     {
         int rtWidth = Screen.width;

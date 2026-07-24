@@ -1,5 +1,6 @@
 using System.Collections;
 using ChoiJeongYun.Scripts.Enemy;
+using ChoiJeongYun.Scripts.Feedback;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,6 @@ public struct RoomSpawnPoint
     public Transform spawnPoint;
 }
 
-// 맵(방)마다 다른 배경/몬스터를 SO로 받아서, 고정된 SpriteRenderer들에 스프라이트만 갈아끼우는 방식.
 public class MapManager : MonoBehaviour
 {
     public static MapManager Instance { get; private set; }
@@ -18,7 +18,7 @@ public class MapManager : MonoBehaviour
     [Header("Map Data")]
     [SerializeField] private RoomMapSO[] maps;
 
-    [Header("Monster Spawn Points (씬 오브젝트, 직접 연결)")]
+    [Header("Monster Spawn Points")]
     [SerializeField] private RoomSpawnPoint[] spawnPoints;
 
     [Header("Fade")]
@@ -30,6 +30,7 @@ public class MapManager : MonoBehaviour
 
     [Header("Monster Death")]
     [SerializeField] private float returnToARoomDelay = 1.5f;
+    [SerializeField] private TornPhotoFeedback tornPhotoFeedback;
 
     private const int RoomCount = 7;
     private const string ControlRoomObjectName = "ControlRoomBG";
@@ -37,6 +38,7 @@ public class MapManager : MonoBehaviour
     private SpriteRenderer[] roomRenderers;
     private SpriteRenderer controlRoomRenderer;
     private GameObject currentMonster;
+    private Texture2D currentSnapshot;
 
     private void Awake()
     {
@@ -80,8 +82,7 @@ public class MapManager : MonoBehaviour
     {
         SwitchToMap(RoomType.ARoom);
     }
-
-    // 페이드 없이 즉시 전환 (PhotoTransitionEffect처럼 이미 자기만의 연출/페이드가 있는 쪽에서 사용)
+    
     public void SwitchToMap(RoomType roomType)
     {
         RoomMapSO map = FindMap(roomType);
@@ -103,12 +104,9 @@ public class MapManager : MonoBehaviour
             controlRoomRenderer.sprite = map.controlRoom;
 
         SpawnMonster(map.monsterPrefab, FindSpawnPoint(roomType));
-
-        // A룸으로 돌아오면 남은 아이템들 다시 켜고, 다른 맵으로 가면 다 꺼둠
         SetItemsActive(roomType == RoomType.ARoom);
     }
-
-    // 자체 연출이 없는 곳(예: 단순 나가기/복귀 상호작용)에서 페이드까지 같이 처리해야 할 때 사용
+    
     public void SwitchToMapWithFade(RoomType roomType)
     {
         StartCoroutine(SwitchWithFadeRoutine(roomType));
@@ -183,7 +181,23 @@ public class MapManager : MonoBehaviour
     private IEnumerator ReturnToARoomAfterDelay()
     {
         yield return new WaitForSeconds(returnToARoomDelay);
+
+        if (tornPhotoFeedback != null && currentSnapshot != null)
+        {
+            yield return tornPhotoFeedback.PlayAndWait(currentSnapshot);
+            Destroy(currentSnapshot);
+            currentSnapshot = null;
+        }
+
         SwitchToMapWithFade(RoomType.ARoom);
+    }
+
+    public void SetCurrentSnapshot(Texture2D snapshot)
+    {
+        if (currentSnapshot != null)
+            Destroy(currentSnapshot);
+
+        currentSnapshot = snapshot;
     }
 
     private IEnumerator Fade(float from, float to, float duration)

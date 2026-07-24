@@ -107,7 +107,7 @@ public class PhotoTransitionEffect : MonoBehaviour
             yield return null;
 
             frameRect.gameObject.SetActive(false);
-            Destroy(snapshot);
+            MapManager.Instance.SetCurrentSnapshot(snapshot); // A룸 복귀할 때 찢어지는 연출에 재사용
 
             yield return FadeBlack(1f, 0f, fadeDuration);
         }
