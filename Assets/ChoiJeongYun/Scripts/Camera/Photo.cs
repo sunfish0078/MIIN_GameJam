@@ -28,7 +28,7 @@ public class Photo : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current == null)
+        if (Mouse.current == null || PhotoTransitionEffect.IsPlaying)
             return;
 
         float scroll = Mouse.current.scroll.ReadValue().y;
@@ -65,5 +65,10 @@ public class Photo : MonoBehaviour
     public float GetCurrentWidth()
     {
         return currentWidth;
+    }
+
+    public float GetCurrentHeight()
+    {
+        return currentWidth / AspectRatio;
     }
 }

@@ -22,6 +22,9 @@ public class FlashEffect : MonoBehaviour
 
     private void Update()
     {
+        if (PhotoTransitionEffect.IsPlaying)
+            return;
+
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
             Flash();
