@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class MainMenuUIManager : MonoBehaviour
@@ -22,6 +23,14 @@ public class MainMenuUIManager : MonoBehaviour
         mainMenuPanel.SetActive(true);
     }
 
+    void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            SettingsOnClick();
+        }
+    }
+
     public void ExitSettingsOnClick()
     {
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
@@ -39,7 +48,10 @@ public class MainMenuUIManager : MonoBehaviour
 
     public void SettingsOnClick()
     {
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-        if (settingsPanel != null) settingsPanel.SetActive(true);
+        if (mainMenuPanel == null) return; 
+        if (settingsPanel == null) return;
+        
+        if (mainMenuPanel.activeSelf) { mainMenuPanel.SetActive(false); }
+        settingsPanel.SetActive(true);
     }
 }
