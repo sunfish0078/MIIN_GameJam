@@ -153,6 +153,10 @@ public class CCTVController : MonoBehaviour
  
     private bool OpenCCTV()
     {
+        // 이미 열려있으면 무시 (안 그러면 W 누를 때마다 지지직 이펙트가 다시 나감)
+        if (isCCTVOpen)
+            return false;
+
         // 이 스테이지에 CCTV가 등록되어 있지 않으면 무시
         if (cctvCameras == null || cctvCameras.Length == 0)
             return false;
@@ -166,7 +170,7 @@ public class CCTVController : MonoBehaviour
         return true;
     }
 
-    private void ShowControlRoom()
+    public void ShowControlRoom()
     {
         isCCTVOpen = false;
 

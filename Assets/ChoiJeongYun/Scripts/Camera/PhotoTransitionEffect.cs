@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PhotoTransitionEffect : MonoBehaviour
@@ -50,12 +49,12 @@ public class PhotoTransitionEffect : MonoBehaviour
         frameRect.gameObject.SetActive(false);
     }
 
-    public void PlayTransition(Texture2D snapshot, string targetSceneName)
+    public void PlayTransition(Texture2D snapshot, RoomType targetRoomType)
     {
-        StartCoroutine(TransitionRoutine(snapshot, targetSceneName));
+        StartCoroutine(TransitionRoutine(snapshot, targetRoomType));
     }
 
-    private IEnumerator TransitionRoutine(Texture2D snapshot, string targetSceneName)
+    private IEnumerator TransitionRoutine(Texture2D snapshot, RoomType targetRoomType)
     {
         IsPlaying = true;
 
@@ -101,7 +100,10 @@ public class PhotoTransitionEffect : MonoBehaviour
 
             yield return FadeBlack(0f, 1f, fadeDuration);
 
-            SceneManager.LoadScene(targetSceneName);
+            if (CCTVController.Instance != null)
+                CCTVController.Instance.ShowControlRoom();
+
+            MapManager.Instance.SwitchToMap(targetRoomType);
             yield return null;
 
             frameRect.gameObject.SetActive(false);

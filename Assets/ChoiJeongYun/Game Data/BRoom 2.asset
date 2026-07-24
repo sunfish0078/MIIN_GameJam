@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d4b3ee1a69cca47b172b0acbc129d0, type: 3}
+  m_Name: BRoom 2
+  m_EditorClassIdentifier: Assembly-CSharp::RoomMapSO
+  roomType: 2
+  room1: {fileID: 21300000, guid: 450bbbb69c930ce42bd16c66853059ff, type: 3}
+  room2: {fileID: 21300000, guid: 57545472e2f93cd42aa18de89847de53, type: 3}
+  room3: {fileID: 21300000, guid: 1636695a175421a4ca3d9adcb072f0b9, type: 3}
+  room4: {fileID: 21300000, guid: 63f9ad3ed50360f4fa43dc33b8511992, type: 3}
+  room5: {fileID: 21300000, guid: affc21700e4300f46af6962ae8a03770, type: 3}
+  room6: {fileID: 21300000, guid: 8e8dc61de51db324dad8b72003f81f91, type: 3}
+  room7: {fileID: 21300000, guid: abf18c3472f08624bae68900e75d3b24, type: 3}
+  controlRoom: {fileID: 21300000, guid: e48574987900eda4b98a97f125a0b8c1, type: 3}
+  monsterPrefab: {fileID: 0}

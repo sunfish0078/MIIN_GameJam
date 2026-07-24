@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SceneTransitionItem : MonoBehaviour, IPhotographable
 {
-    [SerializeField] private string targetSceneName;
+    [SerializeField] private RoomType targetRoomType;
     [SerializeField] private float centerRadius = 0.5f;
 
     public bool IsMouseNearCenter(Vector3 worldPoint)
@@ -12,7 +12,8 @@ public class SceneTransitionItem : MonoBehaviour, IPhotographable
 
     public void OnPhotographed(Texture2D snapshot)
     {
-        PhotoTransitionEffect.Instance.PlayTransition(snapshot, targetSceneName);
+        PhotoTransitionEffect.Instance.PlayTransition(snapshot, targetRoomType);
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()
