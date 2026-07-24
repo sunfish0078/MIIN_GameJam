@@ -135,6 +135,5 @@ Shader "Custom/TMP_SDFShaderGUIGlitch"
             ENDHLSL
         }
     }
-
-    CustomEditor "TMPro.EditorUtilities.TMP_SDFShaderGUIGlitch"
+    CustomEditor "TMPro.EditorUtilities.TMP_SDFShaderGUI"
 }
