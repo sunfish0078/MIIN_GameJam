@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class ButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [SerializeField] private float popScale = 1.2f;
     private Vector3 originalScale;
@@ -11,6 +11,12 @@ public class ButtonHoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         originalScale = transform.localScale;
         originalRotation = transform.rotation;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayUIClick();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

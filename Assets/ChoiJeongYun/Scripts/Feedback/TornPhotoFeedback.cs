@@ -29,6 +29,7 @@ namespace ChoiJeongYun.Scripts.Feedback
         [SerializeField] private float tearDuration = 0.6f;
         [SerializeField] private float slideDistance = 300f;
         [SerializeField] private float spinDegrees = 45f;
+        [SerializeField] private AudioClip tearSound;
 
         private Image topFrameImage;
         private RawImage topPhoto;
@@ -117,6 +118,9 @@ namespace ChoiJeongYun.Scripts.Feedback
 
         private IEnumerator TearRoutine()
         {
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(tearSound);
+
             Vector2 topEnd = topRestPosition + new Vector2(-slideDistance * 0.4f, slideDistance);
             Vector2 bottomEnd = bottomRestPosition + new Vector2(slideDistance * 0.4f, -slideDistance);
 

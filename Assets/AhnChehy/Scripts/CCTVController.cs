@@ -105,8 +105,14 @@ public class CCTVController : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard[openKey].wasPressedThisFrame)
         {
-            if (OpenCCTV() && glitchEffect != null)
-                glitchEffect.TriggerGlitch();
+            if (OpenCCTV())
+            {
+                if (glitchEffect != null)
+                    glitchEffect.TriggerGlitch();
+
+                if (SoundManager.Instance != null)
+                    SoundManager.Instance.PlayUIClick();
+            }
         }
         else if (keyboard[closeKey].wasPressedThisFrame)
         {
@@ -114,6 +120,9 @@ public class CCTVController : MonoBehaviour
 
             if (glitchEffect != null)
                 glitchEffect.TriggerGlitch();
+
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayUIClick();
         }
  
         if (isCCTVOpen)

@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// 촬영 판정(레티클 범위 vs 대상 콜라이더)에 공통으로 쓰는 계산들.
-// PhotoDamage(몬스터 데미지), PhotoItemDetector(아이템 인식) 양쪽에서 재사용.
 public static class CaptureOverlapMath
 {
     public static Vector3 ScreenPointToWorldPoint(Camera cam, Vector2 screenPoint)

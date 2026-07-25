@@ -16,6 +16,7 @@ namespace ChoiJeongYun.Scripts.Interaction
         [SerializeField] private string promptMessage = "숨기";
         [SerializeField] private float clickCooldown = 0.3f;
         [SerializeField] private UnityEvent onInteract;
+        [SerializeField] private AudioClip interactSound;
 
         private CinemachineBrain brain;
         private bool isHovered;
@@ -67,6 +68,9 @@ namespace ChoiJeongYun.Scripts.Interaction
                     if (cam != null)
                         cam.Priority = inactivePriority;
                 }
+
+                if (SoundManager.Instance != null)
+                    SoundManager.Instance.PlaySFX(interactSound);
 
                 onInteract?.Invoke();
             }

@@ -10,6 +10,7 @@ public class FlashEffect : MonoBehaviour
     [SerializeField] private float holdDuration;
     [SerializeField] private float fadeOutDuration;
     [SerializeField] private float cooldown;
+    [SerializeField] private AudioClip shutterSound;
 
     public event Action OnCaptured;
 
@@ -22,8 +23,6 @@ public class FlashEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        // CCTV 캔버스가 꺼졌다 켜지는 과정에서 페이드 코루틴이 중간에 끊겨도,
-        // 다시 켜질 때 항상 깨끗한 상태로 시작하게 함 (안 그러면 하얗게 멈춘 채로 남을 수 있음)
         isFlashing = false;
         SetAlpha(0f);
     }
@@ -44,6 +43,10 @@ public class FlashEffect : MonoBehaviour
         if (isFlashing) return;
 
         OnCaptured?.Invoke();
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX(shutterSound);
+
         StartCoroutine(FlashRoutine());
     }
 

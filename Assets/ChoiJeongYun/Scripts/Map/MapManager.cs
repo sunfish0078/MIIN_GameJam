@@ -46,6 +46,9 @@ public class MapManager : MonoBehaviour
     [SerializeField] private float returnToARoomDelay = 1.5f;
     [SerializeField] private TornPhotoFeedback tornPhotoFeedback;
 
+    [Header("BGM")]
+    [SerializeField] private AudioClip ventHumSound;
+
     private const int RoomCount = 7;
     private const string ControlRoomObjectName = "ControlRoomBG";
 
@@ -54,6 +57,8 @@ public class MapManager : MonoBehaviour
     private GameObject currentMonster;
     private Texture2D currentSnapshot;
     private List<GameObject> allItems;
+    private RoomType currentRoomType;
+    private readonly HashSet<RoomType> clearedRooms = new HashSet<RoomType>();
 
     private void Awake()
     {
@@ -72,8 +77,7 @@ public class MapManager : MonoBehaviour
         }
 
         controlRoomRenderer = FindRenderer(ControlRoomObjectName);
-
-        // FindGameObjectsWithTag는 비활성 오브젝트를 못 찾으므로, 다 켜져있는 지금(Awake) 시점에 미리 캐싱해둠.
+        
         allItems = new List<GameObject>(GameObject.FindGameObjectsWithTag(itemTag));
 
         if (blackPanel != null)
@@ -84,29 +88,26 @@ public class MapManager : MonoBehaviour
     {
         GameObject obj = GameObject.Find(objectName);
         if (obj == null)
-        {
-            Debug.LogError($"MapManager: 씬에서 '{objectName}' 오브젝트를 못 찾았어요.");
             return null;
-        }
 
-        SpriteRenderer renderer = obj.GetComponent<SpriteRenderer>();
-        if (renderer == null)
-            Debug.LogError($"MapManager: '{objectName}'에 SpriteRenderer가 없어요.");
-
-        return renderer;
+        return obj.GetComponent<SpriteRenderer>();
     }
 
     private void Start()
     {
         SwitchToMap(RoomType.ARoom);
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayAmbient(ventHumSound);
     }
     
     public void SwitchToMap(RoomType roomType)
     {
+        currentRoomType = roomType;
+
         RoomMapSO map = FindMap(roomType);
         if (map == null)
         {
-            Debug.LogError($"MapManager: '{roomType}'에 해당하는 RoomMapSO를 못 찾았어요.");
             return;
         }
 
@@ -239,12 +240,58 @@ public class MapManager : MonoBehaviour
 
     private void HandleMonsterDead()
     {
+        if (currentRoomType != RoomType.ARoom)
+            clearedRooms.Add(currentRoomType);
+
+        // BRoom1/2/3 다 클리어했으면 게임 클리어로
+        if (clearedRooms.Count >= 3)
+        {
+            StartCoroutine(GameClearSequence());
+            return;
+        }
+
         StartCoroutine(ReturnToARoomAfterDelay());
+    }
+
+    private IEnumerator GameClearSequence()
+    {
+        PhotoTransitionEffect.SetInputLocked(true);
+
+        try
+        {
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.StopAmbient();
+
+            if (tornPhotoFeedback != null && currentSnapshot != null)
+            {
+                yield return tornPhotoFeedback.PlayAndWait(currentSnapshot);
+                Destroy(currentSnapshot);
+                currentSnapshot = null;
+            }
+
+            if (blackPanel != null)
+                yield return Fade(0f, 1f, fadeDuration);
+
+            if (CCTVController.Instance != null)
+                CCTVController.Instance.ShowControlRoom();
+
+            if (RoomTimer.Instance != null)
+                RoomTimer.Instance.StopRoom();
+            
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.StopSFX();
+
+            if (MainMenuUIManager.Instance != null)
+                MainMenuUIManager.Instance.ShowGameClearPanel();
+        }
+        finally
+        {
+            PhotoTransitionEffect.SetInputLocked(false);
+        }
     }
 
     private IEnumerator ReturnToARoomAfterDelay()
     {
-        // 몬스터 죽고 나서 A룸에 실제로 돌아갈 때까지(찢어지는 연출+페이드 포함) 다른 입력 다 막음
         PhotoTransitionEffect.SetInputLocked(true);
 
         try
@@ -257,8 +304,7 @@ public class MapManager : MonoBehaviour
                 Destroy(currentSnapshot);
                 currentSnapshot = null;
             }
-
-            // SwitchToMapWithFade는 코루틴을 던지기만 하고 안 기다리므로, 직접 하위 코루틴으로 대기
+            
             yield return SwitchWithFadeRoutine(RoomType.ARoom);
         }
         finally

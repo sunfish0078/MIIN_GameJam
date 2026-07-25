@@ -25,6 +25,14 @@ PrefabInstance:
       value: 0.03872466
       objectReference: {fileID: 0}
     - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: chaseCrySound
+      value: 
+      objectReference: {fileID: 8300000, guid: 16e450115a8cda744a1a413fdb97770f, type: 3}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: jumpscareSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1255d17892ef3a34b8fe4d783e597f24, type: 3}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: switchesPerMove
       value: 7
       objectReference: {fileID: 0}
@@ -72,6 +80,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2665299471966447638, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 3932d41c25702d249a05abd3583654cf, type: 3}
     - target: {fileID: 3919582709455077446, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Name
       value: gaakk

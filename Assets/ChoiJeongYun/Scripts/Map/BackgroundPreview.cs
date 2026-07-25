@@ -11,10 +11,7 @@ public class BackgroundPreview : MonoBehaviour
     public void ApplyPreview()
     {
         if (previewMap == null)
-        {
-            Debug.LogWarning("BackgroundPreview: Preview Map이 비어있어요.");
             return;
-        }
 
         Sprite[] roomSprites =
         {
@@ -37,12 +34,6 @@ public class BackgroundPreview : MonoBehaviour
     private SpriteRenderer FindRenderer(string objectName)
     {
         GameObject obj = GameObject.Find(objectName);
-        if (obj == null)
-        {
-            Debug.LogWarning($"BackgroundPreview: '{objectName}'을(를) 못 찾았어요.");
-            return null;
-        }
-
-        return obj.GetComponent<SpriteRenderer>();
+        return obj != null ? obj.GetComponent<SpriteRenderer>() : null;
     }
 }

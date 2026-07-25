@@ -25,6 +25,14 @@ PrefabInstance:
       value: 0.057260096
       objectReference: {fileID: 0}
     - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: chaseCrySound
+      value: 
+      objectReference: {fileID: 8300000, guid: 692c3a729e31f1946832de55ee4c3503, type: 3}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: jumpscareSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 40739decef97470438f69788b9696be3, type: 3}
+    - target: {fileID: 1171668431501382654, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: footstepWarningLead
       value: 3
       objectReference: {fileID: 0}
@@ -84,6 +92,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2665299471966447638, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 8380a3374bc38eb4a8e093960002736b, type: 3}
     - target: {fileID: 3919582709455077446, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_Name
       value: baby

@@ -7,7 +7,9 @@ namespace ChoiJeongYun.Scripts.Enemy
     {
         public UnityEvent OnDeadEvent;
         public UnityEvent OnHitEvent;
-        
+
+        [SerializeField] private AudioClip deathSound;
+
         public EnemyMovement MovementCompo {get; private set;}
         public EnemyAnimator AnimatorCompo {get; private set;}
         public EnemyHealth  HealthCompo {get; private set;}
@@ -28,6 +30,10 @@ namespace ChoiJeongYun.Scripts.Enemy
         private void HandleOnDead()
         {
             IsDead = true;
+
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(deathSound);
+
             OnDeadEvent?.Invoke();
         }
 
@@ -36,8 +42,7 @@ namespace ChoiJeongYun.Scripts.Enemy
             if (IsDead) return;
 
             HealthCompo.TakeDamage(damage);
-
-            // 이번 타격으로 죽었으면 피격 반응(블링크/도망)은 굳이 재생 안 함 — 사망 연출과 겹쳐서 꼬임
+            
             if (IsDead) return;
 
             OnHitEvent?.Invoke();

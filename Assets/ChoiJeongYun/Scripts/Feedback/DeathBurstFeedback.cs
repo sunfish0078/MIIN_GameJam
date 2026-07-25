@@ -2,8 +2,6 @@ using UnityEngine;
 
 namespace ChoiJeongYun.Scripts.Feedback
 {
-    // 메인 몬스터가 죽을 때 살점이 터지는 듯한 파티클 연출.
-    // 별도 아트 애셋 없이 코드로 파티클 시스템을 직접 구성함.
     public class DeathBurstFeedback : AbstractFeedback
     {
         [SerializeField] private SpriteRenderer targetRenderer;

@@ -7,8 +7,7 @@ public class PhotoTransitionEffect : MonoBehaviour
     public static PhotoTransitionEffect Instance { get; private set; }
     
     public static bool IsPlaying { get; private set; }
-
-    // MapManager처럼 다른 곳에서 진행하는 연출(몬스터 죽고 A룸 복귀 등)도 같은 입력 잠금을 쓰게 하기 위한 통로.
+    
     public static void SetInputLocked(bool locked)
     {
         IsPlaying = locked;
@@ -31,12 +30,13 @@ public class PhotoTransitionEffect : MonoBehaviour
     [SerializeField] private AnimationCurve growCurve = new AnimationCurve(
         new Keyframe(0f, 0f, 0f, 0f),
         new Keyframe(1f, 1f, 2f, 2f));
+    [SerializeField] private AudioClip transitionSound;
 
     [Header("Fade Panel")]
     [SerializeField] private Image blackPanel;
     [SerializeField] private float fadeDuration = 0.5f;
 
-    private Vector2 baseSize; // frameRect의 원래(고정) 디자인 크기
+    private Vector2 baseSize; 
 
     private void Awake()
     {
@@ -63,8 +63,7 @@ public class PhotoTransitionEffect : MonoBehaviour
     private IEnumerator TransitionRoutine(Texture2D snapshot, RoomType targetRoomType)
     {
         IsPlaying = true;
-
-        // 중간에 뭔가 터져도 finally에서 무조건 풀어줌 (안 그러면 영구 입력 잠금)
+        
         try
         {
             polaroidImage.texture = snapshot;
@@ -79,7 +78,6 @@ public class PhotoTransitionEffect : MonoBehaviour
             frameRect.localEulerAngles = Vector3.zero;
             frameRect.localScale = Vector3.zero;
 
-            // 1단계: 팝으로 튀어나오기 (살짝 커졌다 정상 크기로)
             float popElapsed = 0f;
             while (popElapsed < popDuration)
             {
@@ -89,11 +87,12 @@ public class PhotoTransitionEffect : MonoBehaviour
                 yield return null;
             }
             frameRect.localScale = Vector3.one * startScale;
-
-            // 잠깐 멈췄다가 회전 시작
+            
             yield return new WaitForSeconds(postPopDelay);
+            
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(transitionSound);
 
-            // 2단계: 빙글빙글 돌면서 화면 꽉 찰 때까지 커지기
             float elapsed = 0f;
             while (elapsed < growDuration)
             {
@@ -113,7 +112,7 @@ public class PhotoTransitionEffect : MonoBehaviour
             yield return null;
 
             frameRect.gameObject.SetActive(false);
-            MapManager.Instance.SetCurrentSnapshot(snapshot); // A룸 복귀할 때 찢어지는 연출에 재사용
+            MapManager.Instance.SetCurrentSnapshot(snapshot);
 
             yield return FadeBlack(1f, 0f, fadeDuration);
         }
@@ -127,8 +126,7 @@ public class PhotoTransitionEffect : MonoBehaviour
             SetBlackAlpha(0f);
         }
     }
-
-    // 옆(또는 위아래)을 잘라서 정사각형으로 보이게, 텍스처 자체는 안 건드리고 UV만 크롭.
+    
     private void ApplySquareCrop(Texture2D snapshot)
     {
         float aspect = snapshot.width / (float)snapshot.height;
