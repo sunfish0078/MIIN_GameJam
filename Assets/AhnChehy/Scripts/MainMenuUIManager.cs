@@ -21,6 +21,7 @@ public class MainMenuUIManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject gameClearPanel;
+    [SerializeField] private GameObject tutorialPanel;
 
     [Header("씬 전환 페이드 (전체화면 검은 Image, 캔버스 맨 위)")]
     [SerializeField] private Image sceneFadeImage;
@@ -65,6 +66,8 @@ public class MainMenuUIManager : MonoBehaviour
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (gameClearPanel != null) gameClearPanel.SetActive(false);
+        if (tutorialPanel != null) tutorialPanel.SetActive(false);
+        
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
 
         // 게임 처음 켰을 때도 검은 화면에서 서서히 밝아지게
@@ -224,5 +227,11 @@ public class MainMenuUIManager : MonoBehaviour
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameClearPanel != null) gameClearPanel.SetActive(true);
+    }
+    
+    public void TutorialOnClick()
+    {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (tutorialPanel != null) tutorialPanel.SetActive(true);
     }
 }
