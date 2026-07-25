@@ -20,6 +20,7 @@ public class MainMenuUIManager : MonoBehaviour
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject gameClearPanel;
+    [SerializeField] private GameObject tutorialPanel;
 
     // 설정을 열기 직전에 메인 메뉴가 실제로 켜져 있었을 때만 닫을 때 다시 켜줌
     // (ARoom에서는 mainMenuPanel이 이미 꺼져있으므로 안 켜져야 함)
@@ -47,6 +48,8 @@ public class MainMenuUIManager : MonoBehaviour
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
         if (gameClearPanel != null) gameClearPanel.SetActive(false);
+        if (tutorialPanel != null) tutorialPanel.SetActive(false);
+        
         if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
     }
 
@@ -116,5 +119,11 @@ public class MainMenuUIManager : MonoBehaviour
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (gameClearPanel != null) gameClearPanel.SetActive(true);
+    }
+    
+    public void TutorialOnClick()
+    {
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (tutorialPanel != null) tutorialPanel.SetActive(true);
     }
 }
