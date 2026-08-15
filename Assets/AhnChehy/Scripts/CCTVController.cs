@@ -1,7 +1,6 @@
 using System;
 using ChoiJeongYun.Scripts.Interaction;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 using UnityEngine.InputSystem;
 
@@ -42,61 +41,18 @@ public class CCTVController : MonoBehaviour
         }
  
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
- 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
- 
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
- 
+
+    // 이 오브젝트는 ARoom 씬 소속이라 씬이 리로드될 때마다 파괴되고 새로 생김(DontDestroyOnLoad 아님) ->
+    // isCCTVOpen/currentIndex 등도 매번 초기값으로 새로 시작하므로 별도 리바인드 없이 그냥 여기서 한 번 찾으면 됨
     private void Start()
     {
-        ShowControlRoom();
-    }
-    
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        RebindCCTVsForCurrentScene();
-    }
- 
-    
-    private void RebindCCTVsForCurrentScene()
-    {
-        CCTVSceneCameras sceneCameras = UnityEngine.Object.FindFirstObjectByType<CCTVSceneCameras>();
-
+        CCTVSceneCameras sceneCameras = FindFirstObjectByType<CCTVSceneCameras>();
         cctvCameras = (sceneCameras != null) ? sceneCameras.cctvCameras : null;
 
-        // 만약 새 스테이지에 CCTV가 아예 없다면 관리실 뷰로 전환
-        if (cctvCameras == null || cctvCameras.Length == 0)
-        {
-            ShowControlRoom();
-            return;
-        }
-
-        // [핵심] 새 스테이지의 카메라 개수가 이전 인덱스보다 적을 경우 범위를 벗어나지 않도록 보정
-        if (currentIndex >= cctvCameras.Length)
-        {
-            currentIndex = cctvCameras.Length - 1;
-        }
-
-        // 이전 스테이지에서 CCTV를 켜둔 상태였다면, 새로 들어온 씬에서도 그 인덱스의 CCTV를 바로 켬
-        if (isCCTVOpen)
-        {
-            ActivateCCTVAt(currentIndex);
-        }
-        else
-        {
-            ShowControlRoom();
-        }
+        ShowControlRoom();
     }
- 
+
     private void Update()
     {
         if (PhotoTransitionEffect.IsPlaying)

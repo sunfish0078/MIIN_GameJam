@@ -9,6 +9,16 @@ namespace ChoiJeongYun.Scripts.Enemy
         public UnityEvent OnHitEvent;
 
         [SerializeField] private AudioClip deathSound;
+        [SerializeField, Range(0f, 1f)] private float deathSoundVolume = 1f;
+
+        public float DeathSoundLength
+        {
+            get
+            {
+                AudioClip clip = SoundManager.Instance != null ? SoundManager.Instance.ResolveMonsterSFX(deathSound) : deathSound;
+                return clip != null ? clip.length : 0f;
+            }
+        }
 
         public EnemyMovement MovementCompo {get; private set;}
         public EnemyAnimator AnimatorCompo {get; private set;}
@@ -32,7 +42,7 @@ namespace ChoiJeongYun.Scripts.Enemy
             IsDead = true;
 
             if (SoundManager.Instance != null)
-                SoundManager.Instance.PlaySFX(deathSound);
+                SoundManager.Instance.PlayMonsterSFX(deathSound, deathSoundVolume);
 
             OnDeadEvent?.Invoke();
         }

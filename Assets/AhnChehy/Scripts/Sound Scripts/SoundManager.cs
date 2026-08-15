@@ -1,3 +1,4 @@
+using ChoiJeongYun.Scripts.Enemy;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -16,6 +17,9 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private float pitchRangeMax = 1.05f;
     
     [SerializeField] private AudioClip uiClickClip;
+    
+    [SerializeField] private AudioClip cuteSound;
+    [SerializeField] private AudioClip cuteBGM;
 
     private void Awake()
     {
@@ -29,7 +33,6 @@ public class SoundManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
     
-    // BGM을 play함 이미 재생 또 재생 안하게 막음
     public void PlayBGM(AudioClip clip, bool loop = true)
     {
         if (clip == null || bgmSource == null) return;
@@ -40,27 +43,28 @@ public class SoundManager : MonoBehaviour
         bgmSource.loop = loop;
         bgmSource.Play();
     }
- 
-
-    //브금 정지 함수
+    
     public void StopBGM()
     {
         if (bgmSource == null) return;
         bgmSource.Stop();
     }
- 
-
-    //sfx
+    
     public void PlaySFX(AudioClip clip)
+    {
+        PlaySFX(clip, 1f);
+    }
+    
+    public void PlaySFX(AudioClip clip, float volume)
     {
         if (clip == null || sfxSource == null) return;
 
         if (randomizeSfxPitch)
-            sfxSource.pitch = Random.Range(pitchRangeMin, pitchRangeMax); //혹시 랜덤한 소리 피치를 원할수도 있어서 추가
+            sfxSource.pitch = Random.Range(pitchRangeMin, pitchRangeMax); 
         else
             sfxSource.pitch = 1f;
- 
-        sfxSource.PlayOneShot(clip); //playOneshot으로 클립 교체 할필요 없당
+
+        sfxSource.PlayOneShot(clip, volume); 
     }
 
     public void StopSFX()
@@ -68,8 +72,7 @@ public class SoundManager : MonoBehaviour
         if (sfxSource == null) return;
         sfxSource.Stop();
     }
-
-    // 재생 중인 효과음(긴 울음소리 등)을 서서히 줄이며 끔
+    
     public void FadeOutSFX(float duration)
     {
         if (sfxSource == null) return;
@@ -92,8 +95,7 @@ public class SoundManager : MonoBehaviour
         sfxSource.Stop();
         sfxSource.volume = startVolume;
     }
-
-    // 씬(게임 클리어 등) 넘어갈 때 재생 중이던 소리 전부 끔
+    
     public void StopAll()
     {
         StopBGM();
@@ -104,12 +106,19 @@ public class SoundManager : MonoBehaviour
     {
         PlaySFX(uiClickClip);
     }
-
-    // 반복 재생되는 배경 소음(환풍기 등) - bgmSource 재사용
-    public void PlayAmbient(AudioClip clip, bool loop = true)
+    
+    private AudioClip ResolveCowardClip(AudioClip normalClip, AudioClip cuteClip)
     {
-        PlayBGM(clip, loop);
+        return DevMode.CowardMode && cuteClip != null ? cuteClip : normalClip;
     }
+
+    public AudioClip ResolveMonsterSFX(AudioClip clip) => ResolveCowardClip(clip, cuteSound);
+
+    public void PlayMonsterSFX(AudioClip clip) => PlaySFX(ResolveMonsterSFX(clip));
+
+    public void PlayMonsterSFX(AudioClip clip, float volume) => PlaySFX(ResolveMonsterSFX(clip), volume);
+
+    public void PlayAmbient(AudioClip clip, bool loop = true) => PlayBGM(ResolveCowardClip(clip, cuteBGM), loop);
 
     public void StopAmbient()
     {
@@ -136,7 +145,7 @@ public class SoundManager : MonoBehaviour
 
         bgmSource.volume = 0f;
         bgmSource.Stop();
-        bgmSource.volume = startVolume; // 다음 재생을 위해 볼륨 복구
+        bgmSource.volume = startVolume; 
     }
 }
  

@@ -30,6 +30,7 @@ namespace ChoiJeongYun.Scripts.Timer
         private int startMinute;
         private float durationSeconds;
         private float remainingSeconds;
+        private float elapsedSeconds;
         private bool running;
 
         private void Awake()
@@ -97,6 +98,7 @@ namespace ChoiJeongYun.Scripts.Timer
             startMinute = roomStartMinute;
             durationSeconds = roomDurationSeconds;
             remainingSeconds = roomDurationSeconds;
+            elapsedSeconds = 0f;
             running = true;
 
             if (timerRoot != null)
@@ -119,6 +121,8 @@ namespace ChoiJeongYun.Scripts.Timer
         {
             if (!running) return;
 
+            // 현재 시각은 잠식 가속(TimeMultiplier)과 무관하게 항상 실시간 그대로 흘러가야 해서 별도로 누적
+            elapsedSeconds += Time.deltaTime;
             remainingSeconds -= Time.deltaTime * AnomalyManager.TimeMultiplier;
 
             if (remainingSeconds <= 0f)
@@ -135,20 +139,19 @@ namespace ChoiJeongYun.Scripts.Timer
 
         private void UpdateDisplay()
         {
-            float elapsed = durationSeconds - remainingSeconds;
-            int totalMinutes = startHour * 60 + startMinute + Mathf.FloorToInt(elapsed * gameMinutesPerRealSecond);
+            int totalMinutes = startHour * 60 + startMinute + Mathf.FloorToInt(elapsedSeconds * gameMinutesPerRealSecond);
 
             int hour = (totalMinutes / 60) % 24;
             int minute = totalMinutes % 60;
 
             if (currentTimeText != null)
-                currentTimeText.text = $"{hour}시간 {minute}분";
+                currentTimeText.text = $"{hour}시 {minute}분";
 
             int remMinutes = Mathf.FloorToInt(remainingSeconds / 60f);
             int remSeconds = Mathf.FloorToInt(remainingSeconds % 60f);
 
             if (remainingTimeText != null)
-                remainingTimeText.text = $"잠식까지 남은 시간: {remMinutes}분 {remSeconds}초";
+                remainingTimeText.text = $"잠식까지 : {remMinutes}분 {remSeconds}초";
         }
     }
 }

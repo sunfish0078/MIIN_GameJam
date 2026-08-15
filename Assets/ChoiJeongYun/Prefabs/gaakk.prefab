@@ -40,6 +40,18 @@ PrefabInstance:
       propertyPath: footstepWarningLead
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 1632079417697212066, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: cuteJS
+      value: 
+      objectReference: {fileID: 21300000, guid: fd821ae43bdc95344924eb6764aa9b2f, type: 3}
+    - target: {fileID: 1632079417697212066, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: cuteImage
+      value: 
+      objectReference: {fileID: -1521682060882675541, guid: 1892725ba9538c34d9b48ec668871ce5, type: 3}
+    - target: {fileID: 1632079417697212066, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+      propertyPath: targetRenderer
+      value: 
+      objectReference: {fileID: 513850875023161486}
     - target: {fileID: 2266170032230423538, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -102,3 +114,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+--- !u!212 &513850875023161486 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5862561303525651008, guid: 4f73eb30fcaa28745b10594db7241206, type: 3}
+  m_PrefabInstance: {fileID: 6232296700562606798}
+  m_PrefabAsset: {fileID: 0}

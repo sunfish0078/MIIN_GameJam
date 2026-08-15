@@ -9,7 +9,7 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Mixer")]
     [SerializeField] private AudioMixer audioMixer;
  
-    [Header("UI Sliders (다이얼만 쓸 경우 비워둬도 됨)")]
+    [Header("UI Sliders")]
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider bgmSlider;
     [SerializeField] private Slider sfxSlider;
@@ -22,8 +22,8 @@ public class AudioManager : MonoBehaviour
     private const string PREF_BGM = "BGMVolume";
     private const string PREF_SFX = "SFXVolume";
  
-    // 볼륨 기본값 (75%)
-    private const float DEFAULT_VOLUME = 0f;
+    // 볼륨 기본값 (처음 실행 시, 저장된 설정 없을 때)
+    private const float DEFAULT_VOLUME = 1f;
  
     
     private const float MIN_VOLUME_THRESHOLD = 0.0001f;

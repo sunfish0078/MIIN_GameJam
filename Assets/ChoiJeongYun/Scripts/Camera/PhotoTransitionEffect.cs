@@ -47,8 +47,9 @@ public class PhotoTransitionEffect : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
 
+        // 이 오브젝트는 ARoom 씬 소속이라 씬이 리로드될 때마다 파괴되고 새로 생김(DontDestroyOnLoad 아님) ->
+        // frameRect/polaroidImage/blackPanel도 항상 같은 씬 안의 살아있는 참조라 매번 새로 찾을 필요 없음
         baseSize = frameRect.sizeDelta;
 
         SetBlackAlpha(0f);

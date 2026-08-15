@@ -138,7 +138,7 @@ public class MapManager : MonoBehaviour
             if (roomType == RoomType.ARoom)
                 RoomTimer.Instance.StopRoom();
             else
-                RoomTimer.Instance.SetupRoom(map.startHour, map.startMinute, map.encroachmentDurationSeconds);
+                RoomTimer.Instance.SetupRoom(map.startHour, map.startMinute, map.durationSec);
         }
     }
     
@@ -243,24 +243,45 @@ public class MapManager : MonoBehaviour
         if (currentRoomType != RoomType.ARoom)
             clearedRooms.Add(currentRoomType);
 
+        // 처치 연출(사진 찢기 등)이 재생되는 동안에도 타이머가 계속 돌고 있어서, 그 사이에
+        // 잠식 시간이 다 되면 사망 시퀀스가 동시에 겹쳐 터지는 문제가 있었음 -> 처치 즉시 타이머부터 정지
+        if (RoomTimer.Instance != null)
+            RoomTimer.Instance.StopRoom();
+
+        // 죽는 사운드 길이가 보스마다 달라서, 고정 딜레이만 쓰면 사운드가 다 나오기 전에
+        // 찢기 연출이 시작되는 보스가 있었음 -> 실제 사운드 길이를 같이 넘겨서 그만큼은 무조건 기다리게 함
+        float deathSoundLength = 0f;
+        if (currentMonster != null && currentMonster.TryGetComponent(out AbstractEnemy deadEnemy))
+            deathSoundLength = deadEnemy.DeathSoundLength;
+
+        // 죽는소리 자체가 뚝 끊기지 않고 재생 시간에 맞춰 서서히 잦아들도록, 죽은 직후 바로 페이드 시작
+        // (재생 길이 == 페이드 길이라서 다 끝날 때쯤 자연스럽게 0이 됨. 아래 코루틴들의 대기 시간도 여기 맞춰져 있음)
+        if (deathSoundLength > 0f && SoundManager.Instance != null)
+            SoundManager.Instance.FadeOutSFX(deathSoundLength);
+
         // BRoom1/2/3 다 클리어했으면 게임 클리어로
         if (clearedRooms.Count >= 3)
         {
-            StartCoroutine(GameClearSequence());
+            StartCoroutine(GameClearSequence(deathSoundLength));
             return;
         }
 
-        StartCoroutine(ReturnToARoomAfterDelay());
+        StartCoroutine(ReturnToARoomAfterDelay(deathSoundLength));
     }
 
-    private IEnumerator GameClearSequence()
+    private IEnumerator GameClearSequence(float deathSoundLength)
     {
         PhotoTransitionEffect.SetInputLocked(true);
 
         try
         {
+            // 죽는소리 페이드는 HandleMonsterDead에서 이미 시작함. 배경음만 여기서 서서히 줄임
             if (SoundManager.Instance != null)
-                SoundManager.Instance.StopAmbient();
+                SoundManager.Instance.FadeOutAmbient(fadeDuration);
+
+            // 죽는소리가 다 잦아들 때까지 기다렸다가 찢기 연출 시작 (안 그러면 소리가 덜 끝난 채로 찢겨나감)
+            if (deathSoundLength > 0f)
+                yield return new WaitForSeconds(deathSoundLength);
 
             if (tornPhotoFeedback != null && currentSnapshot != null)
             {
@@ -277,9 +298,6 @@ public class MapManager : MonoBehaviour
 
             if (RoomTimer.Instance != null)
                 RoomTimer.Instance.StopRoom();
-            
-            if (SoundManager.Instance != null)
-                SoundManager.Instance.StopSFX();
 
             if (MainMenuUIManager.Instance != null)
                 MainMenuUIManager.Instance.ShowGameClearPanel();
@@ -290,13 +308,14 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ReturnToARoomAfterDelay()
+    private IEnumerator ReturnToARoomAfterDelay(float deathSoundLength)
     {
         PhotoTransitionEffect.SetInputLocked(true);
 
         try
         {
-            yield return new WaitForSeconds(returnToARoomDelay);
+            // 사망 사운드가 returnToARoomDelay보다 긴 보스가 있어서, 둘 중 더 긴 쪽만큼 기다림
+            yield return new WaitForSeconds(Mathf.Max(returnToARoomDelay, deathSoundLength));
 
             if (tornPhotoFeedback != null && currentSnapshot != null)
             {
@@ -311,6 +330,13 @@ public class MapManager : MonoBehaviour
         {
             PhotoTransitionEffect.SetInputLocked(false);
         }
+    }
+
+    // 잠식(시간초과) 사망 연출용 - 현재 방의 RoomMapSO에 지정된 이미지를 GameOverManager가 가져다 씀
+    public Sprite GetCurrentEncroachmentDeathImage()
+    {
+        RoomMapSO map = FindMap(currentRoomType);
+        return map != null ? map.deathImage : null;
     }
 
     public void SetCurrentSnapshot(Texture2D snapshot)

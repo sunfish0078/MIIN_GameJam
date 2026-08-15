@@ -26,4 +26,5 @@ MonoBehaviour:
   anomalyPrefabB: {fileID: 6924486054909758088, guid: 494aa4d3f8a69224a9653049e7c7d255, type: 3}
   startHour: 23
   startMinute: 42
-  encroachmentDurationSeconds: 150
+  durationSec: 100
+  deathImage: {fileID: 21300000, guid: 3ac4ffe1d785d414fbece0cc91b01d97, type: 3}

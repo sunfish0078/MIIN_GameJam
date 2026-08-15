@@ -124,8 +124,7 @@ public class MainMenuUIManager : MonoBehaviour
             SoundManager.Instance.PlayUIClick();
 
         // 설정 여는 동안 걸어뒀던 일시정지/입력잠금 해제
-        Time.timeScale = 1f;
-        PhotoTransitionEffect.SetInputLocked(false);
+        ResetGameplayState();
     }
     public void StartOnClick()
     {
@@ -134,6 +133,14 @@ public class MainMenuUIManager : MonoBehaviour
         // 캔버스가 씬을 넘어 계속 남아있으므로, ARoom으로 가기 전에 메뉴 화면을 꺼둬야 게임 화면 위에 안 남음
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(false);
+
+        // CCTVController도 씬을 넘어 계속 살아있어서, 메뉴 화면 보는 동안 눌린 W/S 등으로
+        // isCCTVOpen이 켜진 채로 남아있을 수 있음 → ARoom 새로 들어가기 전에 강제로 닫힌 상태로 리셋
+        if (CCTVController.Instance != null)
+            CCTVController.Instance.ShowControlRoom();
+
+        // 사망 연출 이후 리셋이 안 됐을 수 있는 입력 잠금/시간 정지도 여기서 확실하게 풀어줌
+        ResetGameplayState();
 
         StartCoroutine(LoadSceneWithFade("ARoom"));
     }
@@ -233,5 +240,25 @@ public class MainMenuUIManager : MonoBehaviour
     {
         if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
         if (tutorialPanel != null) tutorialPanel.SetActive(true);
+    }
+
+    // 게임오버/클리어 화면 클릭 시 메인 메뉴로. "시작"을 다시 누르면 ARoom이 완전히 새로 로드되니 자연스럽게 재시작됨.
+    public void ReturnToMainMenuOnClick()
+    {
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (gameClearPanel != null) gameClearPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayUIClick();
+
+        ResetGameplayState();
+    }
+
+    // 일시정지/입력잠금을 확실하게 풀어줌 (설정 닫기, 재시작, 사망/클리어 후 메뉴 복귀 시 공통으로 필요)
+    private void ResetGameplayState()
+    {
+        Time.timeScale = 1f;
+        PhotoTransitionEffect.SetInputLocked(false);
     }
 }

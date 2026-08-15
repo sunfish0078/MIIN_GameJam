@@ -1,49 +1,40 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
 public class TutorialUI : MonoBehaviour
 {
-    [SerializeField] private GameObject tutorialPanel0;
-    [SerializeField] private GameObject tutorialPanel1;
-    [SerializeField] private GameObject tutorialPanel2;
+    [SerializeField] private GameObject[] panels; // 순서대로. 첫 패널은 카메라 이미지 없이, 나머지는 카메라 이미지와 함께 보임
     [SerializeField] private GameObject defaultPanel;
     [SerializeField] private GameObject cameraImage;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private float fadeDuration = 1f;
 
-    [Header("Fade 설정")] 
-    [SerializeField] private float visibleDuration = 5f;        // 기본 보여지는 시간
-    [SerializeField] private float visibleDurationPanel1 = 7f; // Panel1 보여지는 시간
-    [SerializeField] private float fadeDuration = 1f;           // 페이드 인/아웃 걸리는 시간
-
-    private CanvasGroup panel0CanvasGroup;
-    private CanvasGroup panel1CanvasGroup;
-    private CanvasGroup panel2CanvasGroup;
-    private CanvasGroup cameraCanvasGroup;
+    private CanvasGroup[] panelGroups;
+    private CanvasGroup cameraGroup;
+    private int currentIndex;
+    private bool isAnimating;
 
     private void OnEnable()
     {
-        // 이전 실행 중이던 모든 DOTween 정지
-        DOTween.Kill(transform);
-
-        panel0CanvasGroup = GetOrAddCanvasGroup(tutorialPanel0);
-        panel1CanvasGroup = GetOrAddCanvasGroup(tutorialPanel1);
-        panel2CanvasGroup = GetOrAddCanvasGroup(tutorialPanel2);
-        cameraCanvasGroup = GetOrAddCanvasGroup(cameraImage);
-
-        // 패널 및 CanvasGroup 알파 초기화
-        tutorialPanel0.SetActive(true);
-        tutorialPanel1.SetActive(false);
-        tutorialPanel2.SetActive(false);
-        defaultPanel.SetActive(true);
+        cameraGroup = GetOrAddCanvasGroup(cameraImage);
+        cameraGroup.DOKill();
         cameraImage.SetActive(false);
+        cameraGroup.alpha = 0f;
 
-        panel0CanvasGroup.alpha = 1f;
-        panel1CanvasGroup.alpha = 0f;
-        panel2CanvasGroup.alpha = 0f;
-        cameraCanvasGroup.alpha = 0f;
+        panelGroups = new CanvasGroup[panels.Length];
+        for (int i = 0; i < panels.Length; i++)
+        {
+            CanvasGroup group = GetOrAddCanvasGroup(panels[i]);
+            group.DOKill();
+            panelGroups[i] = group;
 
-        PlayFadeOutSequencePanel0();
+            panels[i].SetActive(i == 0);
+            group.alpha = i == 0 ? 1f : 0f;
+        }
+
+        defaultPanel.SetActive(true);
+        currentIndex = 0;
+        isAnimating = false;
     }
 
     private CanvasGroup GetOrAddCanvasGroup(GameObject target)
@@ -54,100 +45,104 @@ public class TutorialUI : MonoBehaviour
         return group;
     }
 
-    // --- Panel 0 ---
-    private void PlayFadeOutSequencePanel0()
+    // 화면(또는 "다음" 버튼)의 OnClick에 연결. 클릭할 때마다 다음 설명으로 넘어가고,
+    // 마지막 설명에서 클릭하면 튜토리얼을 닫고 메인 메뉴로 돌아감.
+    public void OnClickAdvance()
     {
-        panel0CanvasGroup.DOKill();
-        panel0CanvasGroup.DOFade(0f, fadeDuration)
-            .SetDelay(visibleDuration)
-            .OnComplete(() =>
-            {
-                tutorialPanel0.SetActive(false);
-                PlayFadeInPanel1();
-            });
-    }
+        if (isAnimating || panels.Length == 0) return;
 
-    // --- Panel 1 ---
-    private void PlayFadeInPanel1()
-    {
-        tutorialPanel1.SetActive(true);
-        panel1CanvasGroup.DOKill();
-        panel1CanvasGroup.alpha = 0f;
+        isAnimating = true;
+        bool isLast = currentIndex >= panels.Length - 1;
 
-        panel1CanvasGroup.DOFade(1f, fadeDuration)
-            .OnComplete(() =>
-            {
-                // panel1 페이드인 후 cameraImage 페이드인
-                CameraImageFadeIn(() => 
-                {
-                    PlayFadeOutSequencePanel1();
-                });
-            });
-    }
-
-    private void PlayFadeOutSequencePanel1()
-    {
-        panel1CanvasGroup.DOKill();
-        cameraCanvasGroup.DOKill();
-
-        // panel1과 cameraImage를 같이 페이드아웃
-        Sequence seq = DOTween.Sequence();
-        seq.AppendInterval(visibleDurationPanel1);
-        seq.Append(panel1CanvasGroup.DOFade(0f, fadeDuration));
-        seq.Join(cameraCanvasGroup.DOFade(0f, fadeDuration));
-        seq.OnComplete(() =>
+        HideCurrent(() =>
         {
-            cameraImage.SetActive(false);
-            tutorialPanel1.SetActive(false);
-            PlayFadeInPanel2(); 
+            if (isLast)
+            {
+                defaultPanel.SetActive(false);
+                gameObject.SetActive(false);
+                if (mainMenu != null) mainMenu.SetActive(true);
+                return;
+            }
+
+            currentIndex++;
+            ShowCurrent(() => isAnimating = false);
         });
     }
 
-    // --- Panel 2 ---
-    private void PlayFadeInPanel2()
+    // 즉시 닫고 메인 메뉴로 (X 버튼 등에 연결하고 싶으면 사용)
+    public void SkipTutorial()
     {
-        tutorialPanel2.SetActive(true);
-        panel2CanvasGroup.DOKill();
-        panel2CanvasGroup.alpha = 0f;
+        if (panelGroups != null)
+            foreach (CanvasGroup group in panelGroups)
+                group?.DOKill();
 
-        panel2CanvasGroup.DOFade(1f, fadeDuration)
-            .OnComplete(() =>
-            {
-                CameraImageFadeIn(() =>
-                {
-                    PlayFadeOutSequencePanel2(); 
-                });
-            });
+        cameraGroup?.DOKill();
+
+        if (panels != null)
+            foreach (GameObject panel in panels)
+                if (panel != null) panel.SetActive(false);
+
+        if (cameraImage != null) cameraImage.SetActive(false);
+        if (defaultPanel != null) defaultPanel.SetActive(false);
+
+        gameObject.SetActive(false);
+        if (mainMenu != null) mainMenu.SetActive(true);
+
+        isAnimating = false;
     }
 
-    private void PlayFadeOutSequencePanel2()
+    // 현재 패널 숨기기. 첫 패널(카메라 이미지 없음)이면 패널만, 나머지는 카메라 이미지도 같이.
+    private void HideCurrent(System.Action onComplete)
     {
-        panel2CanvasGroup.DOKill();
-        cameraCanvasGroup.DOKill();
+        CanvasGroup group = panelGroups[currentIndex];
+        GameObject panel = panels[currentIndex];
+        group.DOKill();
 
+        if (currentIndex == 0)
+        {
+            group.DOFade(0f, fadeDuration).OnComplete(() =>
+            {
+                panel.SetActive(false);
+                onComplete?.Invoke();
+            });
+            return;
+        }
+
+        cameraGroup.DOKill();
         Sequence seq = DOTween.Sequence();
-        seq.AppendInterval(visibleDuration);
-        seq.Append(panel2CanvasGroup.DOFade(0f, fadeDuration));
-        seq.Join(cameraCanvasGroup.DOFade(0f, fadeDuration));
+        seq.Append(group.DOFade(0f, fadeDuration));
+        seq.Join(cameraGroup.DOFade(0f, fadeDuration));
         seq.OnComplete(() =>
         {
+            panel.SetActive(false);
             cameraImage.SetActive(false);
-            tutorialPanel2.SetActive(false);
-            defaultPanel.SetActive(false);
-
-            gameObject.SetActive(false); 
-            mainMenu.SetActive(true);
+            onComplete?.Invoke();
         });
     }
 
-    // --- Common ---
-    private void CameraImageFadeIn(Action onComplete)
+    // 다음 패널 보이기. 첫 패널이 아니면 패널 페이드인 후 카메라 이미지도 페이드인.
+    private void ShowCurrent(System.Action onComplete)
     {
-        cameraImage.SetActive(true);
-        cameraCanvasGroup.DOKill();
-        cameraCanvasGroup.alpha = 0f;
+        CanvasGroup group = panelGroups[currentIndex];
+        GameObject panel = panels[currentIndex];
 
-        cameraCanvasGroup.DOFade(1f, fadeDuration)
-            .OnComplete(() => onComplete?.Invoke()); 
+        panel.SetActive(true);
+        group.DOKill();
+        group.alpha = 0f;
+
+        if (currentIndex == 0)
+        {
+            group.DOFade(1f, fadeDuration).OnComplete(() => onComplete?.Invoke());
+            return;
+        }
+
+        group.DOFade(1f, fadeDuration).OnComplete(() =>
+        {
+            cameraImage.SetActive(true);
+            cameraGroup.DOKill();
+            cameraGroup.alpha = 0f;
+
+            cameraGroup.DOFade(1f, fadeDuration).OnComplete(() => onComplete?.Invoke());
+        });
     }
 }

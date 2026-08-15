@@ -27,5 +27,8 @@ public class RoomMapSO : ScriptableObject
     [Header("타이머")]
     public int startHour = 22;
     public int startMinute = 0;
-    public float encroachmentDurationSeconds = 300f;
+    public float durationSec = 300f;
+
+    [Header("잠식 연출")]
+    public Sprite deathImage;
 }

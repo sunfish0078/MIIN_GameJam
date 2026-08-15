@@ -39,6 +39,11 @@ namespace ChoiJeongYun.Scripts.Interaction
                 return;
             }
 
+            // 씬 전환(리로드) 타이밍에 targetCamera/brain이 파괴된 직후 마지막 Update가 한 번 더 도는
+            // 경우가 있어서(파괴 순서가 프레임 내에서 완전히 보장되지 않음), 방어적으로 널 체크
+            if (targetCamera == null || brain == null)
+                return;
+
             if (brain.IsLiveChild(targetCamera))
             {
                 if (isHovered)

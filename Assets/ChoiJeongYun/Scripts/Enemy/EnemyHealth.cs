@@ -17,7 +17,7 @@ namespace ChoiJeongYun.Scripts.Enemy
 
         private void Awake()
         {
-            currentHealth = maxHealth;
+            currentHealth = DevMode.OneHitKillMonsters ? 1 : maxHealth;
         }
 
         public void TakeDamage(int damage)

@@ -117,7 +117,7 @@ namespace ChoiJeongYun.Scripts.Enemy
             state = State.Retreating;
             
             if (SoundManager.Instance != null)
-                SoundManager.Instance.PlaySFX(chaseCrySound);
+                SoundManager.Instance.PlayMonsterSFX(chaseCrySound);
             
             yield return new WaitForSeconds(hitFeedbackDelay);
             yield return Fade(1f, 0f, fadeOutDuration);
